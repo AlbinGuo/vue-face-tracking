@@ -138,7 +138,6 @@
        * Draw trace box
        * */
       plot({x, y, width: w, height: h}) {
-        // 创建框对象
         this.profile.push({ width: w, height: h, left: x, top: y })
       },
       /**
@@ -164,7 +163,6 @@
        * Base64 convert to file
        * */
       // getBlobBydataURI(dataURI, type) {
-      //   // base64解码
       //   var binary = window.atob(dataURI.split(',')[1]);
       //   var array = [];
       //   for(var i = 0; i < binary.length; i++) {
