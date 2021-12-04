@@ -1,6 +1,6 @@
 # vue-face-tracking
 
-> 人脸识别组件
+> Face recognition plugin based on H5
 
 ## Build Setup
 
