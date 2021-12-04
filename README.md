@@ -1,4 +1,4 @@
-# ssit-mobile-face-tracking
+# vue-face-tracking
 
 > 人脸识别组件
 
