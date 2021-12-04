@@ -1,0 +1,10 @@
+node_modules/
+package-lock.json
+.babelrc
+.editorconfig
+.gitignore
+index.html
+src/main.js
+webpack.config.js
+.idea
+package.bak
