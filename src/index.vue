@@ -16,7 +16,6 @@
 </template>
 
 <script>
-  // 引入trackingjs所需文件
   import tracking from '@/assets/js/tracking-min.js'
   import '@/assets/js/face-min.js'
   export default {
@@ -27,16 +26,16 @@
       return {
         screenSize: {width: window.screen.width, height: window.screen.height},
         URL: null,
-        streamIns: null,        // 视频流
-        showContainer: true,    // 显示
+        streamIns: null,        // The video stream
+        showContainer: true,
         tracker: null,
-        tipFlag: false,         // 提示用户已经检测到
-        flag: false,            // 判断是否已经拍照
-        context: null,          // canvas上下文
-        profile: [],            // 轮廓
-        removePhotoID: null,    // 停止转换图片
-        scanTip: '人脸识别中...',// 提示文字
-        imgUrl: ''              // base64格式图片
+        tipFlag: false,         // Indicates that the user has detected
+        flag: false,            // Determine if a photo has been taken
+        context: null,          // Canvas Context
+        profile: [],            // Face contour
+        removePhotoID: null,    // Stop converting pictures
+        scanTip: 'In face recognition...',// text tip
+        imgUrl: ''              // base64 format pic
       }
     },
     mounted() {
@@ -44,7 +43,8 @@
     },
     methods: {
       /**
-       * 视频播放 - 默认调起前置摄像头
+       * Video playback
+       * @desc The front camera is switched on by default
        * */
       playVideo() {
         this.getUserMedia(
@@ -52,38 +52,38 @@
             video: {
               width: 600,
               height: 600,
-              facingMode: "user" /* 摄像头前置优先 */
+              facingMode: "user" // Camera front priority
             }
           },
           this.success,
           this.error)
       },
       /**
-       * 访问用户媒体设备
+       * Access user media devices
        * @param constrains
        * @param success
        * @param error
        */
       getUserMedia(constrains, success, error) {
         if (navigator.mediaDevices.getUserMedia) {
-          //最新标准API
+          //The latest standards API
           navigator.mediaDevices.getUserMedia(constrains).then(success).catch(error);
         } else if (navigator.webkitGetUserMedia) {
-          //webkit内核浏览器
+          //webkit browser
           navigator.webkitGetUserMedia(constrains).then(success).catch(error);
         } else if (navigator.mozGetUserMedia) {
-          //Firefox浏览器
+          //Firefox browser
           navagator.mozGetUserMedia(constrains).then(success).catch(error);
         } else if (navigator.getUserMedia) {
-          //旧版API
+          // Old API
           navigator.getUserMedia(constrains).then(success).catch(error);
         } else {
-          this.scanTip = "你的浏览器不支持访问用户媒体设备"
+          this.scanTip = "Your browser does not support access to user media devices"
         }
       },
       success(stream) {
         this.streamIns = stream
-        // webkit内核浏览器
+        // webkit browser
         this.URL = window.URL || window.webkitURL
         if ("srcObject" in this.$refs.refVideo) {
           this.$refs.refVideo.srcObject = stream
@@ -96,36 +96,35 @@
         }
       },
       error(e) {
-        this.scanTip = "访问用户媒体失败" + e.name + "," + e.message
+        this.scanTip = "Failed to access user media. Procedure" + e.name + "," + e.message
       },
       /**
-       * 人脸捕捉
+       * Face to capture
        */
       initTracker() {
-        this.context = this.$refs.refCanvas.getContext("2d")          // 画布
-        this.tracker = new window.tracking.ObjectTracker('face')      // tracker实例
+        this.context = this.$refs.refCanvas.getContext("2d")          // Canvas
+        this.tracker = new window.tracking.ObjectTracker('face')      // tracker
         this.tracker.setStepSize(1.7)
-        this.tracker.on('track', this.handleTracked)                  // 绑定监听方法
+        this.tracker.on('track', this.handleTracked)                  // listener
         try {
-          window.tracking.track('#video', this.tracker)               // 开始追踪
+          window.tracking.track('#video', this.tracker)               // Began to track
         } catch (e) {
-          // this.scanTip = "访问用户媒体失败，请重试"
+          // this.scanTip = "Failed to access user media. Please try again"
           this.scanTip = e
         }
       },
       /**
-       * 追踪事件 - 【脸部追踪】
+       * Track Event - 【Face tracking】
        * */
       handleTracked(e) {
         if (e.data.length === 0) {
-          this.scanTip = '未检测到人脸'
+          this.scanTip = 'No human face detected'
         } else {
           if (!this.tipFlag) {
-            this.scanTip = '检测成功，正在拍照，请保持不动2秒'
+            this.scanTip = 'Detection succeeded, taking photos, please hold for 2 seconds'
           }
-          // 1秒后拍照，仅拍一次
           if (!this.flag) {
-            // this.scanTip = '拍照中...'
+            // this.scanTip = 'Is taking picture...'
             this.flag = true
             this.removePhotoID = setTimeout(() => {
               this.tackPhoto()
@@ -136,21 +135,25 @@
         }
       },
       /**
-       * 绘制跟踪框
+       * Draw trace box
        * */
       plot({x, y, width: w, height: h}) {
         // 创建框对象
         this.profile.push({ width: w, height: h, left: x, top: y })
       },
       /**
-       * 识别成功后拍照
+       * Take photos after successful identification
        */
       tackPhoto() {
         this.context.drawImage(this.$refs.refVideo, 0, 0, this.screenSize.width, 400)
-        // 保存为base64格式
         this.imgUrl = this.saveAsPNG(this.$refs.refCanvas)
-        /** 拿到base64格式图片之后就可以在this.compare方法中去调用后端接口比较了，也可以调用getBlobBydataURI方法转化成文件再去比较
-         * 我们项目里有一个设置个人头像的地方，先保存一下用户的图片，然后去拿这个图片的地址和当前拍照图片给后端接口去比较。
+        /**
+         * After you get the Base64 image,
+         * you can call the this.pare method to compare the backend interface,
+         * or you can call the getBlobBydataURI method to convert it to a file and compare it
+
+         In our project, there is a place to set personal profile picture. First,
+         save the user's picture, and then compare the address of the picture with the current photo to the back-end interface.
          * */
         // this.compare(imgUrl)
         this.scanTip = this.imgUrl
@@ -158,7 +161,7 @@
         this.close()
       },
       /**
-       * Base64转文件
+       * Base64 convert to file
        * */
       // getBlobBydataURI(dataURI, type) {
       //   // base64解码
@@ -172,26 +175,26 @@
       //   });
       // },
       /**
-       * 照片比对
+       * Pic compare
        * */
       // compare(url) {
       //     let blob = this.getBlobBydataURI(url, 'image/png')
       //     let formData = new FormData()
       //     formData.append("file", blob, "file_" + Date.parse(new Date()) + ".png")
-      //     // TODO 得到文件后进行人脸识别
+      //     // TODO Face recognition is performed after obtaining the file
       // },
       /**
-       * 保存为png,base64格式图片
-       * @desc canvas的dom转化为图片base64
+       * Save as PNG,base64 image
+       * @desc canvas dom convert to base64 pic
        * */
       saveAsPNG(c) {
-        return c.toDataURL('image/png', 0.3) // 参数二：图片质量；大小30K左右
+        return c.toDataURL('image/png', 0.3) // Parameter 2: picture quality; About 30K in size
       },
       /**
-       * 关闭并清理资源
+       * Close and clean up resources
        */
       close() {
-        alert('退出扫描')
+        // alert('Exit the scan')
         this.flag = false
         this.tipFlag = false
         this.showContainer = false
@@ -199,7 +202,7 @@
         this.tracker = null
         this.context = null
         this.profile = []
-        this.scanTip = '人脸识别中...'
+        this.scanTip = 'In face recognition...'
         clearTimeout(this.removePhotoID)
         if (this.streamIns) {
           this.streamIns.enabled = false
