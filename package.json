@@ -1,7 +1,7 @@
 {
   "name": "vue-face-tracking",
-  "description": "人脸识别",
-  "version": "1.0.1",
+  "description": "Face Tracking for H5",
+  "version": "1.0.2",
   "author": "guonan",
   "license": "MIT",
   "private": false,
