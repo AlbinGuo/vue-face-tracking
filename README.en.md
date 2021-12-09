@@ -2,6 +2,9 @@
 
 > Face Tracking Plugin
 
+## The effect
+![输入图片说明](sample1639020755(1).jpg)
+
 ## Install
 
 ``` bash
