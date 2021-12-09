@@ -1,19 +1,28 @@
-# ssit-mobile-face-tracking
+# vue-face-tracking
 
 > Face Tracking Plugin
 
-## Build Setup
+## Install
 
 ``` bash
-# install dependencies
 npm install vue-face-tracking
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
 ```
+
+## Usage
+``` vue
+<template>
+    <face-tracking v-bind="options" @base64GenerateEvent="base64GenerateHandler">
+    </face-tracking>
+</template>
+
+methods:{
+    base64GenerateHandler(imgUrl){
+    	// imgUrl：pic base64
+        alert(imgUrl)
+    },
+}
+```
+
 ## Attributes
 
 | Attribute | Instructions | Type | default |
@@ -34,5 +43,3 @@ npm run build
 | reScan | rescan |
 
 
-
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
