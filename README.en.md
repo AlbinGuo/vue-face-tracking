@@ -23,12 +23,6 @@ methods:{
 }
 ```
 
-## Attributes
-
-| Attribute | Instructions | Type | default |
-| ---- | ---- | ---- | ------ |
-|      |      |      |        |
-
 ## Events
 
 | Event                | Instructions                         | callback params |
