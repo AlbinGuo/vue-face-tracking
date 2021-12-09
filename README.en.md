@@ -14,13 +14,13 @@ npm run dev
 # build for production with minification
 npm run build
 ```
-## 属性
+## Attributes
 
 | Attribute | Instructions | Type | default |
 | ---- | ---- | ---- | ------ |
 |      |      |      |        |
 
-## Event
+## Events
 
 | Event                | Instructions                         | callback params |
 | ------------------- | ---------------------------- | -------- |
