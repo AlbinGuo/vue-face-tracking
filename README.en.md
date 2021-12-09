@@ -3,7 +3,7 @@
 > Face Tracking Plugin
 
 ## The effect
-![输入图片说明](https://gitee.com/guonan01/vue-face-tracking/raw/master/sample1639020755(1).jpg)
+![输入图片说明](sample1639020755(1).jpg)
 
 ## Install
 
