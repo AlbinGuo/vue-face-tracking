@@ -3,7 +3,7 @@
 > 人脸识别组件
 
 ## 效果
-![输入图片说明](sample1639020755(1).jpg)
+![输入图片说明](https://gitee.com/guonan01/vue-face-tracking/raw/master/sample1639020755(1).jpg)
 
 ## 安装
 
