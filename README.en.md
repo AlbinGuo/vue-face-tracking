@@ -30,7 +30,7 @@ methods:{
 
 | Event                | Instructions                         | callback params |
 | ------------------- | ---------------------------- | -------- |
-| base64GenerateEvent | pic base64 |          |
+| base64GenerateEvent | pic base64 |     imgUrl - [base64]     |
 
 ## export methods
 
