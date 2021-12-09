@@ -1,6 +1,6 @@
 # ssit-mobile-face-tracking
 
-> 人脸识别组件
+> Face Tracking Plugin
 
 ## Build Setup
 
@@ -16,22 +16,22 @@ npm run build
 ```
 ## 属性
 
-| 属性 | 说明 | 类型 | 默认值 |
+| Attribute | Instructions | Type | default |
 | ---- | ---- | ---- | ------ |
 |      |      |      |        |
 
-## 事件
+## Event
 
-| 事件                | 说明                         | 回调参数 |
+| Event                | Instructions                         | callback params |
 | ------------------- | ---------------------------- | -------- |
-| base64GenerateEvent | 人脸识别成功后的图片base64串 |          |
+| base64GenerateEvent | pic base64 |          |
 
-## 向外暴漏的方法
+## export methods
 
-| 方法名 | 描述     |
+| Method | Instructions     |
 | ------ | -------- |
-| close  | 关闭扫描 |
-| reScan | 重新扫描 |
+| close  | close scanning |
+| reScan | rescan |
 
 
 

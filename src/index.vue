@@ -4,20 +4,20 @@
       <video ref="refVideo" id="video" autoplay preload loop muted playsinline webkit-playsinline></video>
       <!--<img src="../../assets/images/video-cover.png" alt="cover" class="img-cover"/>-->
       <div class="control-container face-capture">
-        <div class="text-desc">{{scanTip}}</div>
-        <img src="../../assets/images/close.png" class="close" alt="" @click="close"/>
         <canvas ref="refCanvas" :width="screenSize.width" :height="screenSize.height" :style="{opacity: 0}"></canvas>
       </div>
       <div class="rect" v-for="item in profile"
            :style="{ width: item.width + 'px', height: item.height + 'px', left: item.left + 'px', top: item.top + 'px'}"></div>
+      <div class="text-desc">AAAAAAAAAAAAAAA</div>
     </div>
     <img v-show="!showContainer" :src="imgUrl"/>
   </div>
 </template>
 
 <script>
-  import tracking from '@/assets/js/tracking-min.js'
-  import '@/assets/js/face-min.js'
+  // 引入trackingjs所需文件
+  import tracking from './js/tracking-min.js'
+  import './js/face-min.js'
   export default {
     name: "faceTracking",
     props:{
@@ -26,16 +26,16 @@
       return {
         screenSize: {width: window.screen.width, height: window.screen.height},
         URL: null,
-        streamIns: null,        // The video stream
-        showContainer: true,
+        streamIns: null,        // 视频流
+        showContainer: true,    // 显示
         tracker: null,
-        tipFlag: false,         // Indicates that the user has detected
-        flag: false,            // Determine if a photo has been taken
-        context: null,          // Canvas Context
-        profile: [],            // Face contour
-        removePhotoID: null,    // Stop converting pictures
-        scanTip: 'In face recognition...',// text tip
-        imgUrl: ''              // base64 format pic
+        tipFlag: false,         // 提示用户已经检测到
+        flag: false,            // 判断是否已经拍照
+        context: null,          // canvas上下文
+        profile: [],            // 轮廓
+        removePhotoID: null,    // 停止转换图片
+        scanTip: '人脸识别中...',// 提示文字
+        imgUrl: ''              // base64格式图片
       }
     },
     mounted() {
@@ -43,47 +43,53 @@
     },
     methods: {
       /**
-       * Video playback
-       * @desc The front camera is switched on by default
+       * 重新扫描
+       * */
+      reScan(){
+        this.playVideo()
+      },
+      /**
+       * 视频播放 - 默认调起前置摄像头
        * */
       playVideo() {
+        alert(11)
         this.getUserMedia(
           {
             video: {
               width: 600,
               height: 600,
-              facingMode: "user" // Camera front priority
+              facingMode: "user" /* 摄像头前置优先 */
             }
           },
           this.success,
           this.error)
       },
       /**
-       * Access user media devices
+       * 访问用户媒体设备
        * @param constrains
        * @param success
        * @param error
        */
       getUserMedia(constrains, success, error) {
         if (navigator.mediaDevices.getUserMedia) {
-          //The latest standards API
+          //最新标准API
           navigator.mediaDevices.getUserMedia(constrains).then(success).catch(error);
         } else if (navigator.webkitGetUserMedia) {
-          //webkit browser
+          //webkit内核浏览器
           navigator.webkitGetUserMedia(constrains).then(success).catch(error);
         } else if (navigator.mozGetUserMedia) {
-          //Firefox browser
+          //Firefox浏览器
           navagator.mozGetUserMedia(constrains).then(success).catch(error);
         } else if (navigator.getUserMedia) {
-          // Old API
+          //旧版API
           navigator.getUserMedia(constrains).then(success).catch(error);
         } else {
-          this.scanTip = "Your browser does not support access to user media devices"
+          this.scanTip = "你的浏览器不支持访问用户媒体设备"
         }
       },
       success(stream) {
         this.streamIns = stream
-        // webkit browser
+        // webkit内核浏览器
         this.URL = window.URL || window.webkitURL
         if ("srcObject" in this.$refs.refVideo) {
           this.$refs.refVideo.srcObject = stream
@@ -96,35 +102,37 @@
         }
       },
       error(e) {
-        this.scanTip = "Failed to access user media. Procedure" + e.name + "," + e.message
+        // this.scanTip = "访问用户媒体失败" + e.name + "," + e.message
+        this.scanTip = "访问用户媒体失败"
       },
       /**
-       * Face to capture
+       * 人脸捕捉
        */
       initTracker() {
-        this.context = this.$refs.refCanvas.getContext("2d")          // Canvas
-        this.tracker = new window.tracking.ObjectTracker('face')      // tracker
+        this.context = this.$refs.refCanvas.getContext("2d")          // 画布
+        this.tracker = new window.tracking.ObjectTracker('face')      // tracker实例
         this.tracker.setStepSize(1.7)
-        this.tracker.on('track', this.handleTracked)                  // listener
+        this.tracker.on('track', this.handleTracked)                  // 绑定监听方法
         try {
-          window.tracking.track('#video', this.tracker)               // Began to track
+          window.tracking.track('#video', this.tracker)               // 开始追踪
         } catch (e) {
-          // this.scanTip = "Failed to access user media. Please try again"
+          // this.scanTip = "访问用户媒体失败，请重试"
           this.scanTip = e
         }
       },
       /**
-       * Track Event - 【Face tracking】
+       * 追踪事件 - 【脸部追踪】
        * */
       handleTracked(e) {
         if (e.data.length === 0) {
-          this.scanTip = 'No human face detected'
+          this.scanTip = '未检测到人脸'
         } else {
           if (!this.tipFlag) {
-            this.scanTip = 'Detection succeeded, taking photos, please hold for 2 seconds'
+            this.scanTip = '检测成功，正在拍照，请保持不动2秒'
           }
+          // 1秒后拍照，仅拍一次
           if (!this.flag) {
-            // this.scanTip = 'Is taking picture...'
+            // this.scanTip = '拍照中...'
             this.flag = true
             this.removePhotoID = setTimeout(() => {
               this.tackPhoto()
@@ -135,24 +143,21 @@
         }
       },
       /**
-       * Draw trace box
+       * 绘制跟踪框
        * */
       plot({x, y, width: w, height: h}) {
+        // 创建框对象
         this.profile.push({ width: w, height: h, left: x, top: y })
       },
       /**
-       * Take photos after successful identification
+       * 识别成功后拍照
        */
       tackPhoto() {
         this.context.drawImage(this.$refs.refVideo, 0, 0, this.screenSize.width, 400)
+        // 保存为base64格式
         this.imgUrl = this.saveAsPNG(this.$refs.refCanvas)
-        /**
-         * After you get the Base64 image,
-         * you can call the this.pare method to compare the backend interface,
-         * or you can call the getBlobBydataURI method to convert it to a file and compare it
-
-         In our project, there is a place to set personal profile picture. First,
-         save the user's picture, and then compare the address of the picture with the current photo to the back-end interface.
+        /** 拿到base64格式图片之后就可以在this.compare方法中去调用后端接口比较了，也可以调用getBlobBydataURI方法转化成文件再去比较
+         * 我们项目里有一个设置个人头像的地方，先保存一下用户的图片，然后去拿这个图片的地址和当前拍照图片给后端接口去比较。
          * */
         // this.compare(imgUrl)
         this.scanTip = this.imgUrl
@@ -160,9 +165,10 @@
         this.close()
       },
       /**
-       * Base64 convert to file
+       * Base64转文件
        * */
       // getBlobBydataURI(dataURI, type) {
+      //   // base64解码
       //   var binary = window.atob(dataURI.split(',')[1]);
       //   var array = [];
       //   for(var i = 0; i < binary.length; i++) {
@@ -173,26 +179,25 @@
       //   });
       // },
       /**
-       * Pic compare
+       * 照片比对
        * */
       // compare(url) {
       //     let blob = this.getBlobBydataURI(url, 'image/png')
       //     let formData = new FormData()
       //     formData.append("file", blob, "file_" + Date.parse(new Date()) + ".png")
-      //     // TODO Face recognition is performed after obtaining the file
+      //     // TODO 得到文件后进行人脸识别
       // },
       /**
-       * Save as PNG,base64 image
-       * @desc canvas dom convert to base64 pic
+       * 保存为png,base64格式图片
+       * @desc canvas的dom转化为图片base64
        * */
       saveAsPNG(c) {
-        return c.toDataURL('image/png', 0.3) // Parameter 2: picture quality; About 30K in size
+        return c.toDataURL('image/png', 0.3) // 参数二：图片质量；大小30K左右
       },
       /**
-       * Close and clean up resources
+       * 关闭并清理资源
        */
       close() {
-        // alert('Exit the scan')
         this.flag = false
         this.tipFlag = false
         this.showContainer = false
@@ -200,7 +205,7 @@
         this.tracker = null
         this.context = null
         this.profile = []
-        this.scanTip = 'In face recognition...'
+        this.scanTip = '人脸识别中...'
         clearTimeout(this.removePhotoID)
         if (this.streamIns) {
           this.streamIns.enabled = false
@@ -222,21 +227,10 @@
   }
 
   .face-capture video, .face-capture canvas {
-    /*position: fixed;*/
-    /*top: 0;*/
-    /*bottom: 0;*/
-    /*left: 0;*/
-    /*right: 0;*/
-    /*width: 100%;*/
-    /*height: 100%;*/
-    /*object-fit: cover;*/
-    /*z-index: 2;*/
-    /*background-repeat: no-repeat;*/
-    /*background-size: 100% 100%;*/
     position: fixed;
-    top: 4rem;
-    width: 18rem;
-    height: 18rem;
+    top: 2rem;
+    width: 6rem;
+    height: 6rem;
     -o-object-fit: cover;
     object-fit: cover;
     z-index: 2;
@@ -271,18 +265,12 @@
   }
 
   .text-desc{
-    margin-bottom: 1rem;
+    font-size: .4rem;
+    position: absolute;
+    bottom: 2rem;
   }
 
   .face-capture .control-container {
-    /*margin-top: 10rem;*/
-    /*position: relative;*/
-    /*width: 100%;*/
-    /*height: 100%;*/
-    /*object-fit: cover;*/
-    /*z-index: 4;*/
-    /*background-repeat: no-repeat;*/
-    /*background-size: 100% 100%;*/
     position: absolute;
     bottom: 5rem;
   }
@@ -295,8 +283,10 @@
   }
 
   .face-capture .close {
-    width: 50px;
-    height: 50px;
+    width: .6rem;
+    height: .6rem;
     z-index: 10;
+    position: fixed;
+    bottom: 2rem;
   }
 </style>
