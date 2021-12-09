@@ -50,7 +50,6 @@
        * Play Video - Camera front priority
        * */
       playVideo() {
-        alert(11)
         this.getUserMedia(
           {
             video: {
