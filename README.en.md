@@ -1,18 +1,17 @@
 # vue-face-tracking
 
-> Face Tracking Plugin
+> 人脸识别组件
 
-## The effect
+## 效果
 ![输入图片说明](sample1639020755(1).jpg)
 
-## Install
+## 安装
 
 ``` bash
 npm install vue-face-tracking
 ```
-
-## Usage
-``` vue
+## 用法
+```
 <template>
     <face-tracking v-bind="options" @base64GenerateEvent="base64GenerateHandler">
     </face-tracking>
@@ -26,17 +25,17 @@ methods:{
 }
 ```
 
-## Events
+## 事件
 
-| Event                | Instructions                         | callback params |
+| 事件                | 说明                         | 回调参数 |
 | ------------------- | ---------------------------- | -------- |
-| base64GenerateEvent | pic base64 |     imgUrl - [base64]     |
+| base64GenerateEvent | 人脸识别成功后的图片base64串 |   imgUrl - [base64]     |
 
-## export methods
+## 向外暴漏的方法
 
-| Method | Instructions     |
+| 方法名 | 描述     |
 | ------ | -------- |
-| close  | close scanning |
-| reScan | rescan |
+| close  | 关闭扫描 |
+| reScan | 重新扫描 |
 
 
