@@ -1,6 +1,16 @@
-# vue-face-tracking
+<h1 align="center">
+  vue-face-tracking
+</h1>
+<p align="center">
+vue-face-tracking is a Face Tracking Plugin based on Vue2.5
+<p>
+<p align="center">
+  <a href="https://www.npmjs.com/package/vue-face-tracking"><img src="https://img.shields.io/npm/v/vue-face-tracking?color=729B1B&label="></a>
+<p>
 
-> Face Tracking Plugin
+## Description
+A Vue.js component for Face Tracking
+
 
 ## The effect
 ![输入图片说明](sample1639020755(1).jpg)
